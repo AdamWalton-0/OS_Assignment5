@@ -1,0 +1,2 @@
+S101,Ana,CSC3320
+S102,Benjamin,CSC3320

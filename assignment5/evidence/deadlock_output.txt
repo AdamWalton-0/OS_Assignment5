@@ -1,0 +1,67 @@
+2026-11-13 15:36:28.607 | MAIN | MODE_START | deadlock | OK | six workers plus main; --reset=1
+2026-11-13 15:36:28.607 | T2 | THREAD_START | worker | OK | worker ID=T2
+2026-11-13 15:36:28.607 | T2 | LOCK_ACQUIRED | grades.txt | OK | lock=B
+2026-11-13 15:36:28.607 | T3 | THREAD_START | worker | OK | worker ID=T3
+2026-11-13 15:36:28.607 | T1 | THREAD_START | worker | OK | worker ID=T1
+2026-11-13 15:36:28.607 | T1 | LOCK_ACQUIRED | students.txt | OK | lock=A
+2026-11-13 15:36:28.607 | T1 | LOCK_WAIT | grades.txt | WAIT | lock=B owner=T2
+2026-11-13 15:36:28.607 | T2 | LOCK_WAIT | students.txt | WAIT | lock=A owner=T1
+2026-11-13 15:36:28.607 | T6 | THREAD_START | worker | OK | worker ID=T6
+2026-11-13 15:36:28.607 | MAIN | LOCK_TABLE | A,B | WAIT | T1 holds A requests B (owner T2); T2 holds B requests A (owner T1)
+2026-11-13 15:36:28.607 | MAIN | DEADLOCK_DETECTED | A,B | ALERT | wait-for cycle T1 -> T2 -> T1
+2026-11-13 15:36:28.607 | MAIN | ABORT_REQUESTED | operation | OK | cancel both demo tasks cooperatively
+2026-11-13 15:36:28.607 | T5 | THREAD_START | worker | OK | worker ID=T5
+2026-11-13 15:36:28.607 | T1 | ROLLBACK_COMPLETE | staged changes | OK | no file writes occurred; discard operation
+2026-11-13 15:36:28.607 | T1 | LOCK_RELEASED | students.txt | OK | lock=A released by its owner
+2026-11-13 15:36:28.607 | T1 | SAFE_ABORT | operation | OK | deadlock demonstration ended without changes
+2026-11-13 15:36:28.607 | T1 | THREAD_END | worker | OK | finished
+2026-11-13 15:36:28.607 | T2 | ROLLBACK_COMPLETE | staged changes | OK | no file writes occurred; discard operation
+2026-11-13 15:36:28.607 | T2 | LOCK_RELEASED | grades.txt | OK | lock=B released by its owner
+2026-11-13 15:36:28.607 | T2 | SAFE_ABORT | operation | OK | deadlock demonstration ended without changes
+2026-11-13 15:36:28.607 | T2 | THREAD_END | worker | OK | finished
+2026-11-13 15:36:28.607 | T5 | LOCK_ACQUIRED | grades.txt | OK | lock=B
+2026-11-13 15:36:28.607 | T3 | LOCK_ACQUIRED | students.txt | OK | lock=A
+2026-11-13 15:36:28.607 | T6 | LOCK_WAIT | students.txt | WAIT | lock=A owner=T3
+2026-11-13 15:36:28.608 | T5 | GRADE_STATS | grades.txt | OK | count=2 average=89.50 minimum=88 maximum=91
+2026-11-13 15:36:28.608 | T5 | LOCK_RELEASED | grades.txt | OK | lock=B released by its owner
+2026-11-13 15:36:28.608 | T5 | THREAD_END | worker | OK | finished
+2026-11-13 15:36:28.608 | T3 | STUDENT_COUNT | students.txt | OK | Total students = 2
+2026-11-13 15:36:28.608 | T3 | LOCK_RELEASED | students.txt | OK | lock=A released by its owner
+2026-11-13 15:36:28.608 | T3 | THREAD_END | worker | OK | finished
+2026-11-13 15:36:28.608 | T6 | LOCK_ACQUIRED | students.txt | OK | lock=A
+2026-11-13 15:36:28.608 | T6 | LOCK_ACQUIRED | grades.txt | OK | lock=B
+2026-11-13 15:36:28.608 | T6 | LOCK_ACQUIRED | backup.txt | OK | lock=D
+2026-11-13 15:36:28.608 | T6 | BACKUP_CREATED | backup.txt | OK | consistent snapshot under A,B,D
+2026-11-13 15:36:28.608 | T6 | LOCK_RELEASED | backup.txt | OK | lock=D released by its owner
+2026-11-13 15:36:28.608 | T6 | LOCK_RELEASED | grades.txt | OK | lock=B released by its owner
+2026-11-13 15:36:28.608 | T6 | LOCK_RELEASED | students.txt | OK | lock=A released by its owner
+2026-11-13 15:36:28.608 | T6 | THREAD_END | worker | OK | finished
+2026-11-13 15:36:28.608 | T4 | THREAD_START | worker | OK | worker ID=T4
+2026-11-13 15:36:28.608 | T4 | LOCK_ACQUIRED | audit.txt | OK | lock=C
+2026-11-13 15:36:28.608 | T4 | AUDIT_APPEND | audit.txt | OK | recorded committed operations only
+2026-11-13 15:36:28.608 | T4 | LOCK_RELEASED | audit.txt | OK | lock=C released by its owner
+2026-11-13 15:36:28.608 | T4 | THREAD_END | worker | OK | finished
+2026-11-13 15:36:28.608 | MAIN | FILE_METADATA | students.txt | OK | size=34 bytes modified_epoch=1794602188
+
+--- students.txt ---
+S101,Ana,CSC3320
+S102,Ben,CSC3320
+2026-11-13 15:36:28.608 | MAIN | FILE_METADATA | grades.txt | OK | size=40 bytes modified_epoch=1794602188
+
+--- grades.txt ---
+S101,Assignment4,88
+S102,Assignment4,91
+2026-11-13 15:36:28.608 | MAIN | FILE_METADATA | audit.txt | OK | size=31 bytes modified_epoch=1794602188
+
+--- audit.txt ---
+2026-11-04,Project initialized
+2026-11-13 15:36:28.608 | MAIN | FILE_METADATA | backup.txt | OK | size=115 bytes modified_epoch=1794602188
+
+--- backup.txt ---
+BACKUP - STUDENT RECORDS
+S101,Ana,CSC3320
+S102,Ben,CSC3320
+BACKUP - GRADES
+S101,Assignment4,88
+S102,Assignment4,91
+2026-11-13 15:36:28.609 | MAIN | MODE_END | deadlock | OK | all six workers joined; errors=0

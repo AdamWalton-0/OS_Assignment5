@@ -1,0 +1,8 @@
+PASS: deadlock: six threads, final files, locks, audit, backup, log
+PASS: prevention: six threads, final files, locks, audit, backup, log
+PASS: recovery: six threads, final files, locks, audit, backup, log
+PASS: missing file, invalid path, invalid mode: errors; TXT files unchanged
+PASS: repeat run does not duplicate the grade
+PASS: 60 repeated mode runs: no hangs or inconsistent grades
+PASS: symbolic link rejected without writing outside project data
+ALL TESTS PASSED
