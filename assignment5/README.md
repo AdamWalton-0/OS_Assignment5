@@ -1,33 +1,33 @@
-# CSC 3320 Assignment 5 — Concurrent File Management and Deadlocks
+# CSC 3320 Assignment 5 Concurrent File Management and Deadlocks
 
-This is a terminal program for Linux, written in C with POSIX pthreads.
-No website, network server, IP address, or second computer is needed.
+For this program everything is run using one machine and ubuntu. The program is written in C and this is made for linx with POSIX pthread
 
-## Run on Ubuntu
+## how to run it on ubuntu
 
-1. Copy this ZIP into Ubuntu and extract it using the Files app.
-2. Open the extracted `assignment5` folder. Right-click an empty space and
-   select **Open in Terminal**. You should see `file_manager.c` in this folder.
-3. If GCC and make are not installed, run:
+Step one: Copy the zip file into ubuntu after succefully doing that extract the whole folder with the files application.
+
+Step two: Opem the new extracted folder then right click and chose open in terminal then you should be able to see file_manager.c
+
+Step three: If gcc ane make aren6 installed yet you must tun this:
 
 ```bash
 sudo apt update
 sudo apt install build-essential python3
 ```
 
-4. Compile:
+step 4: compile
 
 ```bash
 make
 ```
 
-Or compile without make:
+if you want to skip this, make this does the same thing
 
 ```bash
 gcc -std=c11 -Wall -Wextra -Wpedantic -pthread file_manager.c -o file_manager
 ```
 
-5. Run each demonstration:
+step five: run the demos, note this must be done one at a time
 
 ```bash
 ./file_manager deadlock --reset
@@ -35,30 +35,26 @@ gcc -std=c11 -Wall -Wextra -Wpedantic -pthread file_manager.c -o file_manager
 ./file_manager recovery --reset
 ```
 
-Run these separately so you can explain each result. `--reset` resets the
-sample student, grade, audit, and backup data for that mode. It does not touch
-other modes or the samples folder. Each execution replaces that mode's log.
-Without `--reset`, existing records are retained and an existing grade is not
-added twice. For a predictable class demonstration, always use `--reset`.
-Do not run two copies of the program in the same project folder at once.
+you should run them separtely this way it is easier to see the detail and expalin each result before continuing.
+--reset will put a sample student graee audit and then backup the data for that mode, This will not tocuch other modes or folders, each run replaces that modes log.
 
-## What to expect
+note if you exit --reset off the already made records stay and grades that are already there wont duplicate for class please use --reset each time to ensure output is the same.
 
-- **deadlock**: T1 holds A and requests B; T2 holds B and requests A.
-  Main prints `DEADLOCK_DETECTED` and `T1 -> T2 -> T1`. Both workers safely
-  abort so the program finishes. Student and grade files stay at initial values.
-- **prevention**: T1 and T2 both request A before B. Both complete; no cycle.
-- **recovery**: Main detects the cycle and requests T2 to abort. T2 releases its
-  own lock and retries with A then B. Look for `RETRY_SUCCESS`.
+please ensure no to run multiple copies of the program in the same project folder at the same time.
 
-All modes create six worker threads plus main. T3–T6 wait for both writers to
-finish, then perform counting, auditing, statistics, and backup tasks. Their
-work can overlap when their required locks do not conflict. This deliberate
-ordering makes final statistics reproducible.
+## what you should see
 
-## Output files
+-deadlock thread one will hold A and ask for B while thread two holds B and asks for A. main will print "DEADLOCK_DETECTED" and T1 -> T2
+- Thread one and both will back out, this way the program finishes and the student and grade file stay exactly how they started
+- prevention thread one and thread two ask dor A before B and both finish
+- prevention thread one and thread two each thread asks for A before B and both finish
+- recovery main spots the cycle. then get thread two to abandon and thread two lets go of its lock and tries again with A then B. in out put find RETRY_SUCCESS
 
-The program creates these mode folders inside the project:
+each mode starts six worker threads with the addtion of main
+thread 3 to thread 6 will await until both writers are done after they do the counting auditing statistics and backup
+they can overlap with each other when their locks dont clash
+
+## output files
 
 ```text
 data/deadlock/
@@ -66,64 +62,51 @@ data/prevention/
 data/recovery/
 ```
 
-Each contains students.txt, grades.txt, audit.txt, backup.txt, and execution.log.
-The initial samples are also provided in `samples/`; initialization uses the
-same contents embedded in the C source, so no copying is required.
-The terminal displays final contents and lists the four TXT files with size
-and last-modified time (Unix timestamp).
+each run has students.txt grades.txt audit.txt backup.txt execution.log
 
-After prevention/recovery, Ben becomes Benjamin, his grade becomes 94, and
-S101's Assignment5 grade of 95 is added once. Grade statistics are count 3,
-average 92.33, minimum 88, maximum 95.
+when finised terminal will display: final contents, txt files with their size and last modified time 
 
-To open the results in a terminal:
+after prevention or recovery Ben switched to Benjamin, his grade is 94 and S101s Assignment5 grade of 95 has been added once
+the grade stats are count 3 and average 92.33 and minimum 88 and maximum 95
 
+to see for your self run:
 ```bash
 cat data/recovery/students.txt
 cat data/recovery/grades.txt
 cat data/recovery/execution.log
 ```
 
-The audit file contains completed business operations; execution.log contains
-thread, lock, error, and retry events. They have different purposes.
+audit.txt holds the operations that finished
+execution.log holds the thread, lock, error and retry events
 
-## Test
+## tests
 
 ```bash
 make test
 ```
+test are run in a temp folder so dont worry about demo records
 
-Tests run in a temporary directory and do not change your demo records.
-An expected missing-file error can also be shown after running prevention:
+you can also show an expected error after running prevention
 
 ```bash
 ./file_manager read missing.txt
 ```
 
-This returns an error; your student and grade records stay unchanged.
-The read command reads from `data/prevention/`. Names containing slashes or
-`..` are rejected. Try `./file_manager invalid-mode` for an invalid operation.
+this will report an error and leaves the student and grade records alone
 
-## Files included
+the read command only reads from data/prevention
+names with a slash or .. in them get rejected
+to see an invalid operation try ./file_manager invalid-mode
 
-- file_manager.c: complete program with short explanatory comments.
-- Makefile: compile and test commands.
-- test_project.py: integration and repeat-run checks.
-- samples/: three initial TXT files.
-- evidence/: captured output, tests, and logs from actual Linux runs.
-- REPORT_DRAFT.md: technical report draft; fill in real names/contributions.
-- DEMO_GUIDE.md: a simple presentation sequence and explanation.
+## whats in the folder
 
-## Design limits
+- file_manager.c the whole program with short comments
+- Makefile the compile and test commands
+- test_project.py integration tests and repeat run checks
+- samples the three starting txt files
+- evidence output and test results and logs from real linux runs
+- REPORT_DRAFT.md a draft of the technical report so fill in real names and contributions
+- DEMO_GUIDE.md a simple order to present things in plus what to say
 
-Locks A–D are application locks in an ownership table, guarded by a pthread
-mutex and condition variable. They coordinate this program's threads only;
-other applications do not honor them. A second mutex protects whole log lines.
-Cooperative cancellation happens before file writes. T2 stages both files after
-acquiring both locks and restores the first file if its second rename fails.
-This is not a power-loss-safe transaction system; do not edit the private data
-folder externally while running. Input files are limited to 65,535 bytes.
 
-Before submitting, all team members should understand their assigned code,
-add truthful contributions to the report, and capture any additional evidence
-required by the professor. Recompile on your own Ubuntu VM before class.
+
